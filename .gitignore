@@ -1,0 +1,8 @@
+config/prod.php
+config/dev.php
+vendor/*
+source/*
+web/cache/*
+cache/*
+logs/*
+!*.gitkeep

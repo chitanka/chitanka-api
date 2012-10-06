@@ -1,0 +1,19 @@
+body {
+	padding: 1em;
+	background: url(images/background-pattern.png);
+}
+
+h1 {
+	font-size: 300%;
+	text-shadow: 0 1px 1px white;
+}
+
+#container {
+	margin: 0 auto;
+	padding: 1em 1.5em 1.5em;
+	max-width: 1000px;
+	background-color: #f0f0f0;
+	border: 1px solid silver;
+	border-radius: 1em;
+	box-shadow: 1px 1px 5px #bbb;
+}

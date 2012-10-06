@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>{% block title %}Chitanka API{% endblock %}</title>
+	<link rel="stylesheet" href="{{ base_path }}/css/main.css">
+</head>
+<body>
+	<div id="container">
+		<header></header>
+		<section>{% block body %}{% endblock %}</section>
+		<footer>Provided by <a href="http://chitanka.info">chitanka</a></footer>
+	</div>
+	{% block scripts %}{% endblock %}
+</body>
+</html>

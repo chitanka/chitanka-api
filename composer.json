@@ -1,0 +1,12 @@
+{
+	"require": {
+		"silex/silex": "dev-master",
+		"twig/twig": "1.10.0"
+	},
+	"autoload": {
+		"psr-0": {
+			"Chitanka\\Api": "src",
+			"Chitanka\\Tests": "tests"
+		}
+	}
+}
