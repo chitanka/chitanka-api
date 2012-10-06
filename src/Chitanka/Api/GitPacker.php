@@ -24,8 +24,9 @@ class GitPacker {
 		file_put_contents("$tmpDir/.last", $lastTimestamp);
 
 		$commitBeforeDate = trim(shell_exec("git log --before='$timestamp' -n 1 --oneline | awk '{ print $1 }'"));
-		shell_exec("cp -R --parents `git diff --name-status --oneline $commitBeforeDate | grep -Pv \"D\t\" | awk '{ print $2 }'` $tmpDir");
-		shell_exec("git diff --name-status --oneline $commitBeforeDate | grep -P \"D\t\" | awk '{ print $2 }' > $tmpDir/.deleted");
+		$gitdiff = "git diff --name-status $commitBeforeDate HEAD";
+		shell_exec("cp -R --parents `$gitdiff | grep -Pv \"D\t\" | awk '{ print $2 }'` $tmpDir");
+		shell_exec("$gitdiff | grep -P \"D\t\" | awk '{ print $2 }' > $tmpDir/.deleted");
 
 		$zip = new \ZipArchive;
 		$archive = sprintf('%s/%s-%d.zip', $this->saveDir, $timestamp, time());
