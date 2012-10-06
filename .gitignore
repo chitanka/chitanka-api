@@ -2,7 +2,7 @@ config/prod.php
 config/dev.php
 vendor/*
 source/*
-web/cache/*
+web/cache/*/*
 cache/*
 logs/*
 !*.gitkeep
