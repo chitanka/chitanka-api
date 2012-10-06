@@ -33,7 +33,7 @@ class GitPacker {
 		if ($zip->open($archive, \ZipArchive::CREATE) !== true) {
 			return false;
 		}
-		$iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($tmpDir));
+		$iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($tmpDir, \RecursiveDirectoryIterator::SKIP_DOTS));
 		foreach ($iterator as $file) {
 			$zip->addFile($file->getPathname(), $iterator->getSubPathName());
 		}
