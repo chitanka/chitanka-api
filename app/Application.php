@@ -22,6 +22,10 @@ class Application extends BaseApplication {
 		$config = require "$rootDir/config/".$this['env'].".php";
 		$this->loadConfig($config);
 
+		$this['shell'] = $this->share(function($app){
+			return new Chitanka\Api\Shell();
+		});
+
 		$this['db'] = $this->share(function($app){
 			return new Chitanka\Api\DbPacker($app['db.dir'], $app['db.save']);
 		});
@@ -30,13 +34,13 @@ class Application extends BaseApplication {
 		$this['db.key'] = date('YmdHi');
 
 		$this['content'] = $this->share(function($app){
-			return new Chitanka\Api\GitPacker($app['content.dir'], $app['content.save']);
+			return new Chitanka\Api\GitPacker($app['content.dir'], $app['content.save'], $app['shell']);
 		});
 		$this['content.dir'] = $this['source.dir'].'/content';
 		$this['content.save'] = $this['cache.dir'].'/content';
 
 		$this['src'] = $this->share(function($app){
-			return new Chitanka\Api\GitPacker($app['src.dir'], $app['src.save']);
+			return new Chitanka\Api\GitPacker($app['src.dir'], $app['src.save'], $app['shell']);
 		});
 		$this['src.dir'] = $this['source.dir'].'/src';
 		$this['src.save'] = $this['cache.dir'].'/src';

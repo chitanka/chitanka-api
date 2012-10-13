@@ -5,16 +5,18 @@ class GitPacker {
 
 	private $gitDir = '';
 	private $saveDir = '';
+	private $shell;
 
-	public function __construct($gitDir, $saveDir) {
+	public function __construct($gitDir, $saveDir, Shell $shell) {
 		$this->gitDir = $gitDir;
 		$this->saveDir = $saveDir;
+		$this->shell = $shell;
 	}
 
 	public function createDiffFile($timestamp) {
 		chdir($this->gitDir);
 
-		$lastTimestamp = trim(shell_exec("git log -1 --format='%ct'"));
+		$lastTimestamp = trim($this->shell->exec("git log -1 --format='%ct'"));
 		if ($lastTimestamp == $timestamp) { // no newer commits
 			return false;
 		}
@@ -23,10 +25,10 @@ class GitPacker {
 		mkdir($tmpDir);
 		file_put_contents("$tmpDir/.last", $lastTimestamp);
 
-		$commitBeforeDate = trim(shell_exec("git log --before='$timestamp' -n 1 --oneline | awk '{ print $1 }'"));
+		$commitBeforeDate = trim($this->shell->exec("git log --before='$timestamp' -n 1 --oneline | awk '{ print $1 }'"));
 		$gitdiff = "git diff --name-status $commitBeforeDate HEAD";
-		shell_exec("cp -R --parents `$gitdiff | grep -Pv \"D\t\" | awk '{ print $2 }'` $tmpDir");
-		shell_exec("$gitdiff | grep -P \"D\t\" | awk '{ print $2 }' > $tmpDir/.deleted");
+		$this->shell->exec("cp -R --parents `$gitdiff | grep -Pv \"D\t\" | awk '{ print $2 }'` $tmpDir");
+		$this->shell->exec("$gitdiff | grep -P \"D\t\" | awk '{ print $2 }' > $tmpDir/.deleted");
 
 		$zip = new \ZipArchive;
 		$archive = sprintf('%s/%s-%d.zip', $this->saveDir, $timestamp, time());
