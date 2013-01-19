@@ -17,7 +17,7 @@ class GitPacker {
 		chdir($this->gitDir);
 
 		$lastTimestamp = trim($this->shell->exec("git log -1 --format='%ct'"));
-		if ($lastTimestamp == $timestamp) { // no newer commits
+		if ($lastTimestamp <= $timestamp) { // no newer commits
 			return false;
 		}
 
