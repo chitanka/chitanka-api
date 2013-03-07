@@ -6,11 +6,13 @@ class GitPacker {
 	private $gitDir = '';
 	private $saveDir = '';
 	private $shell;
+	private $mutex;
 
 	public function __construct($gitDir, $saveDir, Shell $shell) {
 		$this->gitDir = $gitDir;
 		$this->saveDir = $saveDir;
 		$this->shell = $shell;
+		$this->mutex = new Mutex($this->saveDir);
 	}
 
 	public function createDiffFile($timestamp) {
@@ -18,6 +20,16 @@ class GitPacker {
 
 		$lastTimestamp = trim($this->shell->exec("git log -1 --format='%ct'"));
 		if ($lastTimestamp <= $timestamp) { // no newer commits
+			return false;
+		}
+
+		$archive = sprintf('%s/%s-%s.zip', $this->saveDir, $timestamp, $lastTimestamp);
+		if (file_exists($archive)) {
+			return $archive;
+		}
+
+		// allow only one instance of packer in order to prevent concurrent requests for same diff file
+		if (!$this->mutex->acquireLock()) {
 			return false;
 		}
 
@@ -31,7 +43,6 @@ class GitPacker {
 		$this->shell->exec("$gitdiff | grep -P \"D\t\" | awk '{ print $2 }' > $tmpDir/.deleted");
 
 		$zip = new \ZipArchive;
-		$archive = sprintf('%s/%s-%d.zip', $this->saveDir, $timestamp, time());
 		if ($zip->open($archive, \ZipArchive::CREATE) !== true) {
 			return false;
 		}
@@ -41,6 +52,9 @@ class GitPacker {
 		}
 		$zip->close();
 
+		$this->mutex->releaseLock();
+
 		return $archive;
 	}
+
 }

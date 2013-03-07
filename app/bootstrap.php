@@ -3,6 +3,7 @@ require_once __DIR__.'/../vendor/autoload.php';
 require_once __DIR__.'/Application.php';
 
 define('DATE_REGEXP', '\d{4}-\d{2}-\d{2}');
+set_time_limit(1800); // give it 30 minutes
 
 $app = new Application(__DIR__.'/..');
 
